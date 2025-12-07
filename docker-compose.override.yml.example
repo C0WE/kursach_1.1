@@ -1,0 +1,22 @@
+# Development overrides
+# Usage: cp docker-compose.override.yml.example docker-compose.override.yml
+
+version: '3.9'
+
+services:
+  webapp:
+    ports:
+      - "3000:3000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    volumes:
+      - ./app:/usr/src/app
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"

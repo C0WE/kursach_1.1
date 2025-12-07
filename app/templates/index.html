@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тестовая среда - Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 Тестовая среда для веб-приложений</h1>
+            <div class="header-info">
+                <span class="status" id="statusBadge">●</span>
+                <p id="statusText">Проверка статуса...</p>
+            </div>
+        </header>
+
+        <main class="dashboard">
+            <!-- Статус сервисов -->
+            <section class="card services-card">
+                <h2>📊 Статус сервисов</h2>
+                <div class="services-grid">
+                    <div class="service-item" id="dbStatus">
+                        <span class="service-icon">🗄️</span>
+                        <span class="service-name">PostgreSQL</span>
+                        <span class="service-status">-</span>
+                    </div>
+                    <div class="service-item" id="cacheStatus">
+                        <span class="service-icon">⚡</span>
+                        <span class="service-name">Redis</span>
+                        <span class="service-status">-</span>
+                    </div>
+                    <div class="service-item" id="prometheusStatus">
+                        <span class="service-icon">📈</span>
+                        <span class="service-name">Prometheus</span>
+                        <span class="service-status">-</span>
+                    </div>
+                    <div class="service-item" id="grafanaStatus">
+                        <span class="service-icon">📊</span>
+                        <span class="service-name">Grafana</span>
+                        <span class="service-status">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Метрики БД -->
+            <section class="card metrics-card">
+                <h2>💾 Метрики БД</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <label>Всего записей:</label>
+                        <div class="metric-value" id="totalRecords">-</div>
+                    </div>
+                    <div class="metric">
+                        <label>Последнее обновление:</label>
+                        <div class="metric-value" id="lastUpdated">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Метрики Redis -->
+            <section class="card cache-card">
+                <h2>⚡ Метрики Redis</h2>
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <label>Ключей в кэше:</label>
+                        <div class="metric-value" id="cacheKeys">-</div>
+                    </div>
+                    <div class="metric">
+                        <label>Используемая память:</label>
+                        <div class="metric-value" id="cacheMemory">-</div>
+                    </div>
+                    <div class="metric">
+                        <label>Hit Rate:</label>
+                        <div class="metric-value" id="cacheHitRate">-</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Управление данными -->
+            <section class="card data-card">
+                <h2>📝 Управление данными</h2>
+                <div class="data-controls">
+                    <div class="form-group">
+                        <input type="text" id="inputName" placeholder="Имя записи" required>
+                        <input type="text" id="inputValue" placeholder="Значение" required>
+                        <button class="btn btn-primary" onclick="createTestData()">✚ Создать запись</button>
+                    </div>
+                    <div class="button-group">
+                        <button class="btn btn-secondary" onclick="refreshData()">🔄 Обновить</button>
+                        <button class="btn btn-secondary" onclick="showRecentRecords()">📋 Последние записи</button>
+                    </div>
+                </div>
+
+                <!-- Таблица данных -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Имя</th>
+                                <th>Значение</th>
+                                <th>Создано</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTable">
+                            <tr><td colspan="4" class="text-center">Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Логи -->
+            <section class="card logs-card">
+                <h2>📋 Последние события</h2>
+                <div class="logs-container" id="logs">
+                    <div class="log-entry">Инициализация...</div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Тестовая среда для разработки и тестирования веб-приложений © 2025</p>
+            <div class="footer-links">
+                <a href="http://localhost:9090" target="_blank">Prometheus</a>
+                <a href="http://localhost:3000" target="_blank">Grafana</a>
+                <a href="#" onclick="showApiDocs()">API Docs</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="/static/main.js"></script>
+</body>
+</html>
