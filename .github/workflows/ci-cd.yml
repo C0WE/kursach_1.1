@@ -63,7 +63,7 @@ jobs:
 
     - name: Run tests
       run: |
-        docker-compose run --rm -e COVERAGE_FILE=/tmp/.coverage webapp sh -c "pytest -v --cov=app --cov-report=term-missing --cov-report=html:/tmp/htmlcov --cache-dir=/tmp/.pytest_cache"
+        docker-compose run --rm -e COVERAGE_FILE=/tmp/.coverage -e PYTEST_CACHE_DIR=/tmp/.pytest_cache webapp sh -c "pytest -v --cov=app --cov-report=term-missing --cov-report=html:/tmp/htmlcov"
 
     - name: Check application health
       run: |
