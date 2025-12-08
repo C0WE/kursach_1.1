@@ -43,23 +43,31 @@ jobs:
     - name: Check application health
       run: |
         sleep 5
-        docker-compose exec -T webapp curl -f http://localhost:3000/health || docker-compose exec -T webapp python -c "import requests; r = requests.get('http://localhost:3000/health'); assert r.status_code == 200, f'Health check failed: {r.status_code}'; print(r.json())"
+        # Try curl first, fallback to Python requests
+        if docker-compose exec -T webapp curl -f http://localhost:3000/health 2>/dev/null; then
+          echo "Health check passed (curl)"
+        else
+          echo "Trying Python requests..."
+          docker-compose exec -T webapp python -c "import requests; r = requests.get('http://localhost:3000/health'); assert r.status_code == 200, f'Health check failed: {r.status_code}'; print('Health check passed:', r.json())"
+        fi
 
     - name: Get image name
       id: image
       run: |
         # Get the actual image name from running container
-        CONTAINER_ID=$(docker-compose ps -q webapp)
+        CONTAINER_ID=$(docker-compose ps -q webapp 2>/dev/null || echo "")
         if [ -n "$CONTAINER_ID" ]; then
-          IMAGE_NAME=$(docker inspect --format='{{.Config.Image}}' $CONTAINER_ID)
-        else
-          # Fallback: use project name + service name (docker-compose default)
+          IMAGE_NAME=$(docker inspect --format='{{.Config.Image}}' $CONTAINER_ID 2>/dev/null || echo "")
+        fi
+        # Fallback: use project name + service name (docker-compose default)
+        if [ -z "$IMAGE_NAME" ]; then
           IMAGE_NAME="kursach-webapp"
         fi
         echo "image=$IMAGE_NAME" >> $GITHUB_OUTPUT
         echo "Found image: $IMAGE_NAME"
 
     - name: Scan images with Trivy
+      id: trivy
       continue-on-error: true
       uses: aquasecurity/trivy-action@master
       with:
@@ -68,12 +76,15 @@ jobs:
         output: 'trivy-results.sarif'
         exit-code: '0'
         severity: 'CRITICAL,HIGH'
+      env:
+        TRIVY_NON_OS: true
 
     - name: Upload Trivy results to GitHub Security tab
-      if: always()
-      uses: github/codeql-action/upload-sarif@v2
+      if: always() && steps.trivy.outcome == 'success' && hashFiles('trivy-results.sarif') != ''
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
+      continue-on-error: true
 
     - name: Cleanup
       if: always()
