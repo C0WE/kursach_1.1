@@ -111,7 +111,7 @@ docker-compose down -v
 
 **Grafana credentials** (стандартные):
 - Email: `admin`
-- Password: `admin`
+- Password: `1235`
 
 ## 🔧 Конфигурация
 
